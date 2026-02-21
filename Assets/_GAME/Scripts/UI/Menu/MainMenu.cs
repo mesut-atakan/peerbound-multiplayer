@@ -14,6 +14,7 @@ namespace Aventra.Game
         [SerializeField] private Button btnLogout;
         [SerializeField] private Button btnExit;
         [SerializeField] private List<BaseMenu> menus = new List<BaseMenu>();
+        [SerializeField] private MultiplayerManagerMenu multiplayerManagerMenu;
         [SerializeField] private CharacterStoreMenu characterStoreMenu;
         [SerializeField] private AuthenticationMenu authenticationMenu;
         [SerializeField] private MainMenuUpperBar mainMenuUpperBar;
@@ -93,7 +94,8 @@ namespace Aventra.Game
 
         private void OnPlayClicked()
         {
-            SceneManager.LoadScene("GameScene");
+            multiplayerManagerMenu.OpenMenu();
+            CloseMenu();
         }
 
         private void OnExitClicked()

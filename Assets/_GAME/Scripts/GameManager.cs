@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using Aventra.Game.Multiplayer;
 using Unity.Netcode;
@@ -15,14 +14,20 @@ namespace Aventra.Game
         void OnEnable()
         {
             NetworkManager.Singleton.ConnectionApprovalCallback += ApprovalCheck;
-            NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnected;
         }
 
         void OnDisable()
         {
             NetworkManager.Singleton.ConnectionApprovalCallback -= ApprovalCheck;
-            NetworkManager.Singleton.OnClientConnectedCallback -= OnClientConnected;
         }
+
+        // void Start()
+        // {
+        //     if (NetworkManager.Singleton.IsConnectedClient)
+        //     {
+        //         OnClientConnected(NetworkManager.Singleton.LocalClientId);
+        //     }
+        // }
 
         private void OnClientConnected(ulong clientId)
         {
@@ -31,6 +36,7 @@ namespace Aventra.Game
             
             if (!_clientCharacterMap.TryGetValue(clientId, out var characterId))
             {
+                
                 characterId = characterCatalog.GetFirstCharacterConfig().Id; // default Id
                 Debug.LogWarning($"No character ID found for client {clientId}, using default ID {characterId}");
             }

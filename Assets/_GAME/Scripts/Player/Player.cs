@@ -10,7 +10,7 @@ namespace Aventra.Game
         public void SetupCharacter(CharacterConfig characterConfig)
         {
             CharacterConfig = characterConfig;
-            GameObject obj = Instantiate(CharacterConfig.Prefab, transform.position, Quaternion.identity, transform);
+            GameObject obj = Instantiate(CharacterConfig.Prefab, transform.position, Quaternion.identity,transform);
         }
     }
 }

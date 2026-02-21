@@ -10,8 +10,13 @@ namespace Aventra.Game
         private const string HORIZONTAL_INPUT = "Horizontal";
         private const string VERTICAL_INPUT = "Vertical";
 
-        public float Horizontal = Input.GetAxis(HORIZONTAL_INPUT);
-        public float Vertical = Input.GetAxis(VERTICAL_INPUT);
+        private float Horizontal => Input.GetAxis(HORIZONTAL_INPUT);
+        private float Vertical => Input.GetAxis(VERTICAL_INPUT);
+
+        void Update()
+        {
+            Move();
+        }
 
         public void Move()
         {

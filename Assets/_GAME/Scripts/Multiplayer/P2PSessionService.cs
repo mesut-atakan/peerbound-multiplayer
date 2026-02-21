@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using Aventra.Game.Singleton;
 using Unity.Netcode;
@@ -10,7 +11,7 @@ using UnityEngine;
 
 namespace Aventra.Game.Multiplayer
 {
-    public sealed class P2PSessionService
+    public sealed class P2PSessionService : MonoBehaviour
     {
         [SerializeField] private UnityTransport transport;
 
@@ -21,7 +22,7 @@ namespace Aventra.Game.Multiplayer
             Allocation allocation = await RelayService.Instance.CreateAllocationAsync(4);
             string joinCode = await RelayService.Instance.GetJoinCodeAsync(allocation.AllocationId);
 
-            transport.SetRelayServerData(AllocationUtils.ToRelayServerData(allocation, "dtls"));
+            ResolveTransport().SetRelayServerData(AllocationUtils.ToRelayServerData(allocation, "dtls"));
             
             var payload = new ConnectionPayload
             {
@@ -43,7 +44,7 @@ namespace Aventra.Game.Multiplayer
             await EnsureServiceAsync();
 
             JoinAllocation joinAllocation = await RelayService.Instance.JoinAllocationAsync(joinCode);
-            transport.SetRelayServerData(AllocationUtils.ToRelayServerData(joinAllocation, "dtls"));
+            ResolveTransport().SetRelayServerData(AllocationUtils.ToRelayServerData(joinAllocation, "dtls"));
 
             var payload = new ConnectionPayload
             {
@@ -69,6 +70,25 @@ namespace Aventra.Game.Multiplayer
             
             if (!AuthenticationService.Instance.IsSignedIn)
                 await AuthenticationService.Instance.SignInAnonymouslyAsync();
+        }
+
+        private UnityTransport ResolveTransport()
+        {
+            if (transport != null)
+                return transport;
+
+            if (NetworkManager.Singleton != null)
+            {
+                transport = NetworkManager.Singleton.NetworkConfig.NetworkTransport as UnityTransport;
+                if (transport != null)
+                    return transport;
+            }
+
+            transport = FindAnyObjectByType<UnityTransport>();
+            if (transport != null)
+                return transport;
+
+            throw new InvalidOperationException("UnityTransport not found. Assign it to P2PSessionService.");
         }
     }
 }
